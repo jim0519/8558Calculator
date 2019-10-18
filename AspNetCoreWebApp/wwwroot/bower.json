@@ -1,0 +1,22 @@
+{
+  "name": "FrontEndManage",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Jim <gdutjim@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery-md5": "*",
+    "jquery": "^3.4.0",
+    "bootstrap": "3.x"
+  }
+}

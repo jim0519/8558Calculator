@@ -1,0 +1,5 @@
+/.vs
+/AspNetCoreWebApp/wwwroot/node_modules
+/AspNetCoreWebApp/wwwroot/bower_components
+/AspNetCoreWebApp/obj
+/AspNetCoreWebApp/bin

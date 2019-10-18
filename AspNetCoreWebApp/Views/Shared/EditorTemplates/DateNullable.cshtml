@@ -1,0 +1,7 @@
+﻿@model DateTime?
+<input  name="@ViewData.TemplateInfo.GetFullHtmlFieldName(string.Empty)" value="@(Model > DateTime.MinValue || Model.HasValue ? Model.Value.ToShortDateString() : null)" placeholder="DD/MM/YYYY"/>
+<script>
+    $(document).ready(function () {
+        $("[name='@ViewData.TemplateInfo.GetFullHtmlFieldName(string.Empty)']").datepicker({ dateFormat: "dd/mm/yy" });
+    });
+</script>

@@ -1,0 +1,115 @@
+﻿@*@model CalculatorViewModel*@
+@{
+    ViewData["Title"] = "VotoboSearch";
+}
+<script src="~/js/jquery.md5.min.js"></script>
+<form class="form-inline">
+    <div class="col-md-12">
+        <div style="padding:30px 15px;" class="col-md-12">
+
+            <h2>Votobo Product Search</h2>
+
+            
+            <div class="form-group">
+                <label for="Keyword">Keyword</label>
+                <input type="text" id="keyword" name="keyword" class="form-control">
+            </div>
+            <div class="form-group">
+                <input type="button" id="btnSearch" class="btn btn-primary" value="Search" />
+                @*<input type="button" id="btnSetValue" class="btn btn-primary" value="Set Value" />*@
+            </div>
+            <input type="hidden" id="timeStamp" name="timeStamp" />
+            <input type="hidden" id="authToken" name="authToken"/>
+            <div id="productList">
+                @*<div class="col-sm-4 col-md-3"> <div class="thumbnail"> <img alt="100%x200" data-src="holder.js/100%x200" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjQxIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDI0MSAyMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzEwMCV4MjAwCkNyZWF0ZWQgd2l0aCBIb2xkZXIuanMgMi42LjAuCkxlYXJuIG1vcmUgYXQgaHR0cDovL2hvbGRlcmpzLmNvbQooYykgMjAxMi0yMDE1IEl2YW4gTWFsb3BpbnNreSAtIGh0dHA6Ly9pbXNreS5jbwotLT48ZGVmcz48c3R5bGUgdHlwZT0idGV4dC9jc3MiPjwhW0NEQVRBWyNob2xkZXJfMTY5YzFlMWM3M2EgdGV4dCB7IGZpbGw6I0FBQUFBQTtmb250LXdlaWdodDpib2xkO2ZvbnQtZmFtaWx5OkFyaWFsLCBIZWx2ZXRpY2EsIE9wZW4gU2Fucywgc2Fucy1zZXJpZiwgbW9ub3NwYWNlO2ZvbnQtc2l6ZToxMnB0IH0gXV0+PC9zdHlsZT48L2RlZnM+PGcgaWQ9ImhvbGRlcl8xNjljMWUxYzczYSI+PHJlY3Qgd2lkdGg9IjI0MSIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSI4OS4zNTkzNzUiIHk9IjEwNS40Ij4yNDF4MjAwPC90ZXh0PjwvZz48L2c+PC9zdmc+" data-holder-rendered="true" style="height: 200px; width: 100%; display: block;"> <div class="caption"> <h3>Thumbnail label</h3> <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p> <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p> </div> </div> </div>
+                <div class="col-sm-4 col-md-3"> <div class="thumbnail"> <img alt="100%x200" data-src="holder.js/100%x200" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjQxIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDI0MSAyMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzEwMCV4MjAwCkNyZWF0ZWQgd2l0aCBIb2xkZXIuanMgMi42LjAuCkxlYXJuIG1vcmUgYXQgaHR0cDovL2hvbGRlcmpzLmNvbQooYykgMjAxMi0yMDE1IEl2YW4gTWFsb3BpbnNreSAtIGh0dHA6Ly9pbXNreS5jbwotLT48ZGVmcz48c3R5bGUgdHlwZT0idGV4dC9jc3MiPjwhW0NEQVRBWyNob2xkZXJfMTY5YzFlMWM3M2EgdGV4dCB7IGZpbGw6I0FBQUFBQTtmb250LXdlaWdodDpib2xkO2ZvbnQtZmFtaWx5OkFyaWFsLCBIZWx2ZXRpY2EsIE9wZW4gU2Fucywgc2Fucy1zZXJpZiwgbW9ub3NwYWNlO2ZvbnQtc2l6ZToxMnB0IH0gXV0+PC9zdHlsZT48L2RlZnM+PGcgaWQ9ImhvbGRlcl8xNjljMWUxYzczYSI+PHJlY3Qgd2lkdGg9IjI0MSIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSI4OS4zNTkzNzUiIHk9IjEwNS40Ij4yNDF4MjAwPC90ZXh0PjwvZz48L2c+PC9zdmc+" data-holder-rendered="true" style="height: 200px; width: 100%; display: block;"> <div class="caption"> <h3>Thumbnail label</h3> <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p> <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p> </div> </div> </div>
+                <div class="col-sm-4 col-md-3"> <div class="thumbnail"> <img alt="100%x200" data-src="holder.js/100%x200" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjQxIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDI0MSAyMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzEwMCV4MjAwCkNyZWF0ZWQgd2l0aCBIb2xkZXIuanMgMi42LjAuCkxlYXJuIG1vcmUgYXQgaHR0cDovL2hvbGRlcmpzLmNvbQooYykgMjAxMi0yMDE1IEl2YW4gTWFsb3BpbnNreSAtIGh0dHA6Ly9pbXNreS5jbwotLT48ZGVmcz48c3R5bGUgdHlwZT0idGV4dC9jc3MiPjwhW0NEQVRBWyNob2xkZXJfMTY5YzFlMWM3M2EgdGV4dCB7IGZpbGw6I0FBQUFBQTtmb250LXdlaWdodDpib2xkO2ZvbnQtZmFtaWx5OkFyaWFsLCBIZWx2ZXRpY2EsIE9wZW4gU2Fucywgc2Fucy1zZXJpZiwgbW9ub3NwYWNlO2ZvbnQtc2l6ZToxMnB0IH0gXV0+PC9zdHlsZT48L2RlZnM+PGcgaWQ9ImhvbGRlcl8xNjljMWUxYzczYSI+PHJlY3Qgd2lkdGg9IjI0MSIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSI4OS4zNTkzNzUiIHk9IjEwNS40Ij4yNDF4MjAwPC90ZXh0PjwvZz48L2c+PC9zdmc+" data-holder-rendered="true" style="height: 200px; width: 100%; display: block;"> <div class="caption"> <h3>Thumbnail label</h3> <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p> <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p> </div> </div> </div>
+                <div class="col-sm-4 col-md-3"> <div class="thumbnail"> <img alt="100%x200" data-src="holder.js/100%x200" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjQxIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDI0MSAyMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzEwMCV4MjAwCkNyZWF0ZWQgd2l0aCBIb2xkZXIuanMgMi42LjAuCkxlYXJuIG1vcmUgYXQgaHR0cDovL2hvbGRlcmpzLmNvbQooYykgMjAxMi0yMDE1IEl2YW4gTWFsb3BpbnNreSAtIGh0dHA6Ly9pbXNreS5jbwotLT48ZGVmcz48c3R5bGUgdHlwZT0idGV4dC9jc3MiPjwhW0NEQVRBWyNob2xkZXJfMTY5YzFlMWM3M2EgdGV4dCB7IGZpbGw6I0FBQUFBQTtmb250LXdlaWdodDpib2xkO2ZvbnQtZmFtaWx5OkFyaWFsLCBIZWx2ZXRpY2EsIE9wZW4gU2Fucywgc2Fucy1zZXJpZiwgbW9ub3NwYWNlO2ZvbnQtc2l6ZToxMnB0IH0gXV0+PC9zdHlsZT48L2RlZnM+PGcgaWQ9ImhvbGRlcl8xNjljMWUxYzczYSI+PHJlY3Qgd2lkdGg9IjI0MSIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSI4OS4zNTkzNzUiIHk9IjEwNS40Ij4yNDF4MjAwPC90ZXh0PjwvZz48L2c+PC9zdmc+" data-holder-rendered="true" style="height: 200px; width: 100%; display: block;"> <div class="caption"> <h3>Thumbnail label</h3> <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p> <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p> </div> </div> </div>*@
+
+            </div>
+            <script>
+
+                
+                $(document).ready(function () {
+
+                    $("#btnSearch").click(function (e) {
+
+                        Search();
+                        return false;
+                    });
+
+                    //$("#btnSetValue").click(function (e) {
+                    //    var timeStamp = Date.parse(new Date), authToken = $.MD5("votobo_" + timeStamp);
+                    //    $("#timeStamp").val(timeStamp);
+                    //    $("#authToken").val(authToken);
+                    //    return false;
+                    //})
+                });
+
+
+
+                function Search() {
+                    //debugger;
+                    var timeStamp = Date.parse(new Date), authToken = $.MD5("votobo_" + timeStamp);
+                    $("#timeStamp").val(timeStamp);
+                    $("#authToken").val(authToken);
+                    var link='@Url.Action("VotoboSearch", "Home")'
+
+                    @*var link = '@Html.Raw( Url.Action("VotoboSearch", new {TimeStamp="_timeStamp_",AuthToken="_authToken_", Keyword = "_keyword_" }))'
+                        .replace('_timeStamp_', timeStamp)
+                        .replace('_authToken_', authToken)
+                        .replace('_keyword_', keyword);*@
+
+                        $.ajax({
+                            url: link,
+                            type: "POST",
+                            //contentType: "application/json; charset=utf-8",
+                            data: $('form').serialize(),
+                            dataType: "json",
+                            beforeSend: function () {
+                                //$("#imgLoading").show();
+                            },
+                            complete: function () {
+                                //$("#imgLoading").hide();
+                            },
+                            success: function (data) {
+                                debugger;
+                                if (data.result) {
+                                    var feeds = data.data.html;
+                                    $("#productList").empty();
+                                    for (var i = 0; i < feeds.length; i++) {
+                                        
+                                        var imgSrc = feeds[i].img;
+                                        var price = feeds[i].price;
+                                        var title = feeds[i].name;
+                                        var itemId = feeds[i].itemId;
+                                        var days7totalSold = feeds[i].days7totalSold;
+                                        var totalSold = feeds[i].totalSold;
+                                        var days7totalSoldPrice = feeds[i].days7totalSoldPrice;
+                                        var days7amplitude = feeds[i].days7amplitude;
+                                        var sellerId = feeds[i].sellerId;
+                                        var itemUrl = decodeURIComponent(feeds[i].mbPublishUrl);
+                                        var productHtml = '<div class="col-sm-4 col-md-3"> <div class="thumbnail"><a href="https://www.ebay.com.au/itm/' + itemId + '" target="_blank" > <img alt="100%x200" data-src="holder.js/100%x200" src="' + imgSrc + '" data-holder-rendered="true" style="height: 200px; width: 100%; display: block;"></a> <div class="caption"> <h5>7 days sold: ' + days7totalSold + ', Price: $' + price + '</h5> <p style="font-size: 12px;">' + title + '</p> <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p> </div> </div> </div>';
+                                        var productItem = $.parseHTML(productHtml);
+                                        $("#productList").append(productItem);
+                                    }
+                                    //alert("Ajax Call Succeed");
+                                }
+                                else {
+                                    alert("Ajax Call Failed");
+                                }
+
+                            },
+                            error: function (data) {
+                                //debugger;
+                                alert("error");
+                            }
+                        });
+                }
+            </script>
+
+
+        </div>
+        
+    </div>
+</form>

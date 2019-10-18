@@ -1,0 +1,285 @@
+﻿@model CalculatorViewModel
+@{
+    ViewData["Title"] = "8558 Condition Calculator";
+}
+<style>
+    .MustDepart {
+        color: white;
+        background-color: red;
+    }
+
+    .OnShore
+    {
+        color:white;
+        background-color:green;
+    }
+
+    .CanReturn {
+        color: white;
+        background-color: deepskyblue;
+    }
+
+    .NewTwelveMonths {
+        color: white;
+        background-color: greenyellow;
+    }
+
+    
+</style>
+<form class="form-inline">
+    <div class="col-md-12">
+        <div style="padding:30px 15px;" class="col-md-9">
+
+            <h2>8558 Condition Calculator</h2>
+            <div class="jumbotron" style="padding:10px 30px;">
+                <dt>
+                    How to use:
+                </dt>
+                <dl>
+                    <ul>
+                        <li>
+                            Input visa validity period.
+                        </li>
+                        <li>
+                            Add entry and depart record one by one.
+                        </li>
+                        <li>
+                            To check when must depart, only enter entry date and leave depart date blank in the last record input.
+                        </li>
+                        <li>
+                            Check the colored month tab for more information (Especially the first and the last tab of every stay period).
+                        </li>
+                        <li>
+                           18 Months=548 Days, 12 Months=365 Days
+                        </li>
+                    </ul>
+                </dl>
+            </div>
+            <div style="margin:10px 0px;">
+                <div class="form-group">
+                    @*<label for="VisaStartDate">VISA Start Date</label>
+        <input type="text" id="VisaStartDate" name="VisaStartDate" class="form-control">*@
+                    @Html.LabelFor(model => model.VisaStartDate)<span style="color:red;">*</span>:
+                    @Html.EditorFor(model => model.VisaStartDate)
+                </div>
+                <div class="form-group">
+                    @*<label for="VisaEndDate">VISA End Date</label>
+        <input type="text" id="VisaEndDate" name="VisaEndDate" class="form-control">*@
+                    @Html.LabelFor(model => model.VisaEndDate)<span style="color:red;">*</span>:
+                    @Html.EditorFor(model => model.VisaEndDate)
+                </div>
+            </div>
+            <div class="form-group">
+                 @Html.LabelFor(model => model.EntryDate)<span style="color:red;">*</span>:
+                @Html.EditorFor(model => model.EntryDate,"",new { htmlAttributes = new { @class= "form-control" } })
+            </div>
+            <div class="form-group">
+                 @Html.LabelFor(model => model.DepartDate):
+               @Html.EditorFor(model => model.DepartDate)
+            </div>
+            <div class="form-group">
+                <input type="button" id="addRecord" class="btn btn-primary" value="Add Record" />
+            </div>
+
+            <div id="monthCalendar" style="margin:20px 0px"></div>
+            <!--<div style="border:1px solid grey; width:80px;height:20px;display:inline-block; text-align:center;">Jan 2018</div>-->
+            <!--<div style="border:1px solid grey; width:80px;height:20px;display:inline-block;text-align:center;margin-left:2px;">Feb 2018</div>-->
+            <!--<div style="border-bottom:1px solid grey;border-right:1px solid grey;border-top:1px solid grey; width:50px;height:20px;display:inline-block;"></div>-->
+            <script>
+                var nodeStr = '<div class="btn btn-default" style="width:60px;font-size:12px;padding:4px 2px;"></div>';
+                //var nodeStr = '<div style="border:1px solid grey; width:80px;height:20px;display:inline-block; text-align:center;margin-left:2px;"></div>';
+                var paraStr = '<p></p>';
+                //var visaStartDate = new Date(2016, 2);
+                var visaValidMonths = 36;
+                //var yearNameList = ["2016", "2017", "2018"];
+                var monthNameList = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                //var appendNode = '<div style="border:1px solid grey; width:50px;height:20px;"></div>';
+                $(document).ready(function () {
+                    //$("#addRecord").prop('title', "Add Record or Start Calculate");
+                    //$("#addRecord").tooltip();
+                    //debugger;
+                    //var leftNode = '<div style="border:1px solid grey; width:50px;height:20px;"></div>';
+                    var paraHtml = $.parseHTML(paraStr);
+                    //$("[name='EntryDate']").prop('required', true);
+                    
+                    //for (var i = 0; i < visaValidMonths; i++) {
+                    //    //document.write(monthNameList[i]);
+                    //    if (i > 0 && i % 12 == 0)
+                    //        $("#monthCalendar").append(paraStr);
+                    //    var nodeHtml = $.parseHTML(nodeStr);
+                    //    var visaAncoleDate = new Date(2016, 2);
+                    //    visaAncoleDate.setMonth(visaAncoleDate.getMonth() + i);
+                    //    //nodeHtml.innerHtml = monthNameList[i];
+                    //    $(nodeHtml).html(visaAncoleDate.getFullYear() + ' ' + monthNameList[(visaAncoleDate.getMonth())]);
+                    //    $("#monthCalendar").append(nodeHtml);
+                    //}
+
+                    //$("#VisaStartDate").datepicker({ dateFormat: "dd-mm-yy" });
+                    //$("#VisaEndDate").datepicker({ dateFormat: "dd-mm-yy" });
+                    //$("#entryDate").datepicker({ dateFormat: "dd-mm-yy" });
+                    //$("#departDate").datepicker({ dateFormat: "dd-mm-yy" });
+
+                    $("#addRecord").click(function (e) {
+                        
+
+                        //add record
+                        //debugger;
+                        //var rowCount = $('#tblEntryDepartRecord tr').length - 1;
+                        var visaStartDate = $("[name='VisaStartDate']").val();
+                        var visaEndDate = $("[name='VisaEndDate']").val();
+                        var entryDate = $("[name='EntryDate']").val();
+                        var departDate = $("[name='DepartDate']").val();
+                        if (entryDate == '') {
+                            alert('Please enter entry date.');
+                            return false;
+                        }
+                        if (visaStartDate == '') {
+                            alert('Please enter visa start date.');
+                            return false;
+                        }
+                        if (visaEndDate == '') {
+                            alert('Please enter visa end date.');
+                            return false;
+                        }
+
+                        AddRecord(entryDate, departDate);
+                        
+
+                        Calculate();
+                        $("[name='EntryDate']").val("");
+                        $("[name='DepartDate']").val("");
+                        return false;
+                    })
+                });
+
+                function AddRecord(entryDate,departDate)
+                    {
+                    var rowIndex = $('#tblEntryDepartRecord tr').length - 1;
+                    $("#tblEntryDepartRecord").append(
+                        "<tr>" +
+                        "<td>" + entryDate + "<input type='hidden' name='EntryDepartRecord[" + rowIndex + "].EntryDate' value='" + entryDate + "' /></td>" +
+                        "<td>" + departDate + "<input type='hidden' name='EntryDepartRecord[" + rowIndex + "].DepartDate' value='" + departDate + "' /></td>" +
+                        "<td><a href='#'>Delete</a></td>" +
+                        "</tr>");
+
+                    $("#tblEntryDepartRecord tr:last a").bind("click", Delete);
+                    $("#tblEntryDepartRecord tr:last a").bind("click", Calculate);
+                }
+
+                function Delete(e) {
+                    //debugger;
+                    //e.preventDefault();
+                    var rowCount = $('#tblEntryDepartRecord tr').length-1;
+                    var opIndex = $('#tblEntryDepartRecord tr').index($(this).closest('tr'));
+                    if (opIndex < rowCount) {
+                        alert('Please delete the record from bottom to top');
+                        return false;
+                    }
+                    //if ($(this).parent().parent().parent().select('tr').length)
+                    var par = $(this).parent().parent(); //tr
+                    par.remove();
+                    //Calculate();
+                }; 
+
+                function Calculate() {
+                    var link='@Url.Action("Calculator","Home")';
+
+                        $.ajax({
+                            url: link,
+                            type: "POST",
+                            //contentType: "application/json; charset=utf-8",
+                            data: $('form').serialize(),
+                            dataType: "json",
+                            beforeSend: function () {
+                                //$("#imgLoading").show();
+                            },
+                            complete: function () {
+                                //$("#imgLoading").hide();
+                            },
+                            success: function (data) {
+                                
+                                if (data.result) {
+                                    var resultMonths = data.data.resultMonths;
+                                    $("#monthCalendar").empty();
+                                    for (var i = 0; i < resultMonths.length; i++) {
+                                        //document.write(monthNameList[i]);
+                                        var resultMonth = resultMonths[i];
+                                        if (i > 0 && i % 12 == 0)
+                                            $("#monthCalendar").append(paraStr);
+                                        var nodeHtml = $.parseHTML(nodeStr);
+                                        //var visaAncoleDate = new Date(2016, 2);
+                                        //visaAncoleDate.setMonth(visaAncoleDate.getMonth() + i);
+                                        //nodeHtml.innerHtml = monthNameList[i];
+                                        $(nodeHtml).html(resultMonth.caption);
+                                        
+                                        //if (resultMonth.isOnshore)
+                                        //    $(nodeHtml).css({ 'color': 'white', 'background-color': 'green' });
+                                        if (resultMonth.cssClass != null)
+                                            $(nodeHtml).addClass(resultMonth.cssClass);
+
+                                        if (resultMonth.toolTip != null) {
+                                            //debugger;
+                                            $(nodeHtml).prop('title', resultMonth.toolTip);
+                                            $(nodeHtml).attr('data-toggle', 'tooltip');
+                                            //$(nodeHtml).tooltip();
+                                        }
+                                        $("#monthCalendar").append(nodeHtml);
+                                    }
+                                    $('[data-toggle="tooltip"]').tooltip(); 
+
+                                    //clear old entry depart record and add corrected ones
+                                    if (data.data.entryDepartRecord) {
+                                        $('#tblEntryDepartRecord tr:has(td)').each(function (e) {
+                                            debugger;
+                                            $(this).remove();
+                                            
+                                        });
+                                        $.each(data.data.entryDepartRecord, function (index, value) {
+                                            debugger;
+                                            AddRecord(value.entryDate, value.departDate);
+                                        });
+                                    }
+
+
+                                    //alert("Ajax Call Succeed");
+                                    //RefreshGrid(true);
+                                }
+                                else {
+                                    alert("Ajax Call Failed");
+                                }
+
+                            },
+                            error: function (data) {
+                                //debugger;
+                                alert("error");
+                            }
+                        });
+                }
+            </script>
+
+
+        </div>
+        <div class="col-md-3">
+            <table class="table table-striped" id="tblEntryDepartRecord">
+                <tr>
+                    <th>Entry Date</th>
+                    <th>Depart Date</th>
+                </tr>
+                @*<tr>
+                    <td>2017-06-21 <input type="hidden" name="EntryDepartRecord[0].EntryDate" value="2017-06-21" /></td>
+                    <td>2017-09-30 <input type="hidden" name="EntryDepartRecord[0].DepartDate" value="2017-09-30" /></td>
+                    <td><a href="#">Delete</a></td>
+                </tr>
+                <tr>
+                    <td>2018-02-05 <input type="hidden" name="EntryDepartRecord[1].EntryDate" value="2018-02-05" /></td>
+                    <td> 2018-09-20<input type="hidden" name="EntryDepartRecord[1].DepartDate" value="2018-09-20" /></td>
+                    <td><a href="#">Delete</a></td>
+                </tr>*@
+                @*<tr>
+                    <td>2019-01-25 <input type="hidden" name="EntryDepartRecord[2].EntryDate" value="2019-01-25" /></td>
+                    <td>2019-10-14 <input type="hidden" name="EntryDepartRecord[2].DepartDate" value="2019-10-14" /></td>
+                </tr>*@
+            </table>
+        </div>
+    </div>
+</form>
