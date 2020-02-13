@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AspNetCoreWebApp.Models;
-using AspNetCoreWebApp.DbModels;
+using AspNetCoreWebApp.DbModels.CalculatorDbModels;
 using AspNetCoreWebApp.Filters;
 using AspNetCoreWebApp.Business;
 using RestSharp;
@@ -16,9 +16,9 @@ namespace AspNetCoreWebApp.Controllers
 
     public class HomeController : Controller
     {
-        private readonly AutoPostAdDealSplashContext _dbContext;
+        private readonly CalculatorContext _dbContext;
 
-        public HomeController(AutoPostAdDealSplashContext dbContext)
+        public HomeController(CalculatorContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -26,17 +26,33 @@ namespace AspNetCoreWebApp.Controllers
         [CustomerFilter(true)]
         public IActionResult Index(bool isContinue)
         {
-            var accounts = _dbContext.Account.ToList();
-            foreach(var account in accounts)
+            _dbContext.Database.EnsureCreated();
+            var users = _dbContext.User;
+            foreach(var user in users)
             {
 
             }
+
+            var newUser = new User();
+            newUser.EmailAddress = "gdutjim@gmail.com";
+            newUser.Password = "123";
+            newUser.FirstName = "Jing";
+            newUser.LastName = "Xu";
+            newUser.Status = 1;
+            newUser.CreateBy = newUser.EmailAddress;
+            newUser.CreateTime = DateTime.Now;
+            newUser.EditBy = newUser.EmailAddress;
+            newUser.EditTime = DateTime.Now;
+
+            users.Add(newUser);
+            _dbContext.SaveChanges();
+
             //using (var dbcontext = new AutoPostAdDealSplashContext())
             //{
             //    dbcontext.Database.EnsureCreated();
             //}
 
-                return View();
+            return View();
         }
 
         public IActionResult About()

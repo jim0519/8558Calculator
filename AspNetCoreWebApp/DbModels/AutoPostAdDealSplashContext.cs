@@ -46,12 +46,12 @@ namespace AspNetCoreWebApp.DbModels
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=DESKTOP-B2Q8INJ\\SQL2012;Initial Catalog=AutoPostAdDealSplash;User ID=sa;Password=Shishiliu-0310;MultipleActiveResultSets=True");
-                //optionsBuilder.UseMySql("server=127.0.0.1;database=AutoPostAdDealSplash;user=root;password=Shishiliu-0310");
-            }
+//            if (!optionsBuilder.IsConfigured)
+//            {
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+//                optionsBuilder.UseSqlServer("Data Source=DESKTOP-B2Q8INJ\\SQL2012;Initial Catalog=AutoPostAdDealSplash;User ID=sa;Password=Shishiliu-0310;MultipleActiveResultSets=True");
+//                //optionsBuilder.UseMySql("server=127.0.0.1;database=AutoPostAdDealSplash;user=root;password=Shishiliu-0310");
+//            }
             base.OnConfiguring(optionsBuilder);
         }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using AspNetCoreWebApp.DbModels;
+using AspNetCoreWebApp.DbModels.CalculatorDbModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -42,10 +42,13 @@ namespace AspNetCoreWebApp
             //services.AddEntityFrameworkInMemoryDatabase();
 
             //services.AddAuthentication().AddGoogle
+            var dbFilePath = Path.Combine(Environment.CurrentDirectory, "DBFile");
+            if (!Directory.Exists(dbFilePath))
+                Directory.CreateDirectory(dbFilePath);
 
-            services.AddDbContext<AutoPostAdDealSplashContext>(config=> {
-                config.UseInMemoryDatabase("AutoPostAdDealSplashInMemory");
-                
+            services.AddDbContext<CalculatorContext>(config=> {
+                //config.UseInMemoryDatabase("AutoPostAdDealSplashInMemory");
+                config.UseSqlite($"Filename={dbFilePath}\\Calculator.db");
                 //config.Options.
             });
 
