@@ -41,8 +41,11 @@ namespace AspNetCoreWebApp
 
             //services.AddEntityFrameworkInMemoryDatabase();
 
+            //services.AddAuthentication().AddGoogle
+
             services.AddDbContext<AutoPostAdDealSplashContext>(config=> {
                 config.UseInMemoryDatabase("AutoPostAdDealSplashInMemory");
+                
                 //config.Options.
             });
 
@@ -106,7 +109,8 @@ namespace AspNetCoreWebApp
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=VotoboSearch}");
+                    template: "{controller=Home}/{action=Calculator}");
+                //template: "{controller=Home}/{action=VotoboSearch}");
             });
 
 

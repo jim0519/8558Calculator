@@ -76,8 +76,14 @@ namespace AspNetCoreWebApp.Controllers
         public IActionResult Calculator()
         {
             var model = new CalculatorViewModel();
-            model.VisaStartDate =Convert.ToDateTime( "01-01-2017");
-            model.VisaEndDate = Convert.ToDateTime("01-01-2020");
+            //model.VisaStartDate =Convert.ToDateTime( "01-01-2017");
+            //model.VisaEndDate = Convert.ToDateTime("01-01-2020");
+            int startYear = DateTime.Now.AddYears(-1).Year;
+            int endYear= DateTime.Now.AddYears(2).Year;
+            DateTime firstDay = new DateTime(startYear, 1, 1);
+            DateTime lastDay = new DateTime(endYear, 1, 1);
+            model.VisaStartDate = firstDay;
+            model.VisaEndDate = lastDay;
             return View(model);
         }
 
@@ -110,7 +116,7 @@ namespace AspNetCoreWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult VotoboSearch(string timeStamp,string authToken,string keyword)
+        public async Task<IActionResult> VotoboSearch(string timeStamp,string authToken,string keyword)
         {
 
             var client = new RestClient("http://member.votobo.com/");
@@ -127,8 +133,8 @@ namespace AspNetCoreWebApp.Controllers
             //authToken
             //keyword
             votoboFeedRequest.AddUrlSegment("priceMin", "5");
-            votoboFeedRequest.AddUrlSegment("priceMax", "");
-            votoboFeedRequest.AddUrlSegment("days7totalSoldMin", "5");
+            votoboFeedRequest.AddUrlSegment("priceMax", "50");
+            votoboFeedRequest.AddUrlSegment("days7totalSoldMin", "2");
             votoboFeedRequest.AddUrlSegment("days7totalSoldMax", "");   
             votoboFeedRequest.AddUrlSegment("totalSoldMin", "");
             votoboFeedRequest.AddUrlSegment("totalSoldMax", "");
@@ -147,22 +153,24 @@ namespace AspNetCoreWebApp.Controllers
             VotoboResult votoboResult = null;
             IRestResponse<VotoboResult> resultResponse=null;
             //var taskCompletionSource = new TaskCompletionSource<VotoboResult>();
-            var requestHandler = client.ExecuteAsync<VotoboResult>(votoboFeedRequest,response=> {
-                if (response.Data != null)
-                {
-                    votoboResult= response.Data;
-                }
-            });
 
-            Task.Run(async () =>
-            {
-                resultResponse = await GetResponseContentAsync(client, votoboFeedRequest) as IRestResponse<VotoboResult>;
-            }).Wait();
+            //var requestHandler = client.ExecuteAsync<VotoboResult>(votoboFeedRequest,response=> {
+            //    if (response.Data != null)
+            //    {
+            //        votoboResult= response.Data;
+            //    }
+            //});
+
+            //Task.Run(async () =>
+            //{
+            //    resultResponse = await GetResponseContentAsync(client, votoboFeedRequest) as IRestResponse<VotoboResult>;
+            //}).Wait();
+            resultResponse = await GetResponseContentAsync(client, votoboFeedRequest) as IRestResponse<VotoboResult>;
             votoboResult = resultResponse.Data;
             //taskCompletionSource.Task.Wait();
             //votoboResult = taskCompletionSource.Task.Result;
-
-            return Json(new { Result = true, Data = votoboResult });
+            return Ok(Json(new { Result = true, Data = votoboResult }));
+            //return await Task.FromResult( Json(new { Result = true, Data = votoboResult }));
         }
 
         public Task<IRestResponse<VotoboResult>> GetResponseContentAsync(RestClient theClient, RestRequest theRequest)

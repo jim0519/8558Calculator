@@ -74,8 +74,8 @@
                             },
                             success: function (data) {
                                 debugger;
-                                if (data.result) {
-                                    var feeds = data.data.html;
+                                if (data.value.result) {
+                                    var feeds = data.value.data.html;
                                     $("#productList").empty();
                                     for (var i = 0; i < feeds.length; i++) {
                                         

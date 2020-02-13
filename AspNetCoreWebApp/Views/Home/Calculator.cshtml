@@ -24,6 +24,14 @@
         background-color: greenyellow;
     }
 
+    .noTitleStuff .ui-dialog-titlebar {
+        display: none
+    }
+
+    .thumbnailSuppliment {
+        height: 310px;
+    }
+
     
 </style>
 <form class="form-inline">
@@ -118,6 +126,30 @@
                     //$("#VisaEndDate").datepicker({ dateFormat: "dd-mm-yy" });
                     //$("#entryDate").datepicker({ dateFormat: "dd-mm-yy" });
                     //$("#departDate").datepicker({ dateFormat: "dd-mm-yy" });
+                    //debugger;
+                    var visaValidity = $.cookie("VisaValidity");
+                    //if (visaValidity != undefined) {
+                    //    visaValidity = JSON.parse(visaValidity);
+                    //};
+
+                    var entryDepartRecords = $.cookie("EntryDepartRecords");
+                    //if (entryDepartRecords != undefined) {
+                    //    entryDepartRecords = JSON.parse(entryDepartRecords);
+                    //};
+
+                    if (visaValidity != undefined && entryDepartRecords != undefined) {
+                        visaValidity = JSON.parse(visaValidity);
+                        entryDepartRecords = JSON.parse(entryDepartRecords);
+                        //debugger;
+                        $("[name='VisaStartDate']").val(visaValidity.VisaStartDate);
+                        $("[name='VisaEndDate']").val(visaValidity.VisaEndDate);
+
+                        $.each(entryDepartRecords, function () {
+                            AddRecord(this.EntryDate, this.DepartDate);
+                        });
+
+                        Calculate();
+                    }
 
                     $("#addRecord").click(function (e) {
                         
@@ -150,7 +182,67 @@
                         $("[name='DepartDate']").val("");
                         return false;
                     })
+
+                    //$("#DonateDialog").dialog({
+                    //    modal: true,
+                    //    buttons: {
+                    //        Ok: function () {
+                    //            $(this).dialog("close");
+                    //        }
+                    //    }
+                    //});
+
+                    setTimeout(function () {
+                        $("#DonateDialog").dialog({
+                            width: 'auto',
+                            height: 'auto',
+                            modal: true,
+                            buttons: {
+                                OK: function () {
+                                    $(this).dialog("close");
+                                }
+                            },
+                            dialogClass: 'noTitleStuff',
+                            fluid: true, //new option
+                            resizable: false
+                        });
+                    }, 10000);
+
+
+                    $(window).resize(function () {
+                        fluidDialog();
+                    });
+
+                    // catch dialog if opened within a viewport smaller than the dialog width
+                    $(document).on("dialogopen", ".ui-dialog", function (event, ui) {
+                        fluidDialog();
+                    });
+
                 });
+
+                function fluidDialog() {
+                    var $visible = $(".ui-dialog:visible");
+                    // each open dialog
+                    $visible.each(function () {
+                        var $this = $(this);
+                        var dialog = $this.find(".ui-dialog-content").data("ui-dialog");
+                        // if fluid option == true
+                        if (dialog.options.fluid) {
+                            var wWidth = $(window).width();
+                            // check window width against dialog width
+                            if (wWidth < (parseInt(dialog.options.maxWidth) + 50)) {
+                                // keep dialog from filling entire screen
+                                $this.css("max-width", "90%");
+                            } else {
+                                // fix maxWidth bug
+                                $this.css("max-width", dialog.options.maxWidth + "px");
+                            }
+                            //reposition dialog
+                            dialog.option("position", dialog.options.position);
+                        }
+                    });
+
+                }
 
                 function AddRecord(entryDate,departDate)
                     {
@@ -164,6 +256,8 @@
 
                     $("#tblEntryDepartRecord tr:last a").bind("click", Delete);
                     $("#tblEntryDepartRecord tr:last a").bind("click", Calculate);
+                    //$("#tblEntryDepartRecord tr:last a").bind("click", SetCookie);
+                    //SetCookie();
                 }
 
                 function Delete(e) {
@@ -179,6 +273,7 @@
                     var par = $(this).parent().parent(); //tr
                     par.remove();
                     //Calculate();
+                    //SetCookie();
                 }; 
 
                 function Calculate() {
@@ -230,16 +325,24 @@
                                     //clear old entry depart record and add corrected ones
                                     if (data.data.entryDepartRecord) {
                                         $('#tblEntryDepartRecord tr:has(td)').each(function (e) {
-                                            debugger;
+                                            //debugger;
                                             $(this).remove();
                                             
                                         });
                                         $.each(data.data.entryDepartRecord, function (index, value) {
-                                            debugger;
+                                            //debugger;
                                             AddRecord(value.entryDate, value.departDate);
                                         });
                                     }
 
+                                    SetCookie();
+
+                                    @*debugger;
+                                    var visaValidity = {
+                                        VisaStartDate: '@Model.VisaStartDate.Value.ToString("dd/MM/yyyy")', VisaEndDate: '@Model.VisaEndDate.Value.ToString("dd/MM/yyyy")'
+                                    };
+                                    $.cookie("VisaValidity", JSON.stringify(visaValidity));
+                                    $.cookie("EntryDepartRecords", JSON.stringify(data.data.entryDepartRecord));*@
 
                                     //alert("Ajax Call Succeed");
                                     //RefreshGrid(true);
@@ -254,6 +357,27 @@
                                 alert("error");
                             }
                         });
+                }
+
+                function SetCookie() {
+                    //debugger;
+                    var entryDepartRecords = [];
+                    $('#tblEntryDepartRecord > tbody  > tr').each(function (i, row) {
+                        //debugger;
+                        var $row = $(row),
+                            $entryDate = $row.find('input[name*="EntryDate"]'),
+                            $departDate = $row.find('input[name*="DepartDate"]');
+                        if ($entryDate.length > 0 && $departDate.length > 0) {
+                            //entryDepartRecords.push("EntryDate": $entryDate.val(), "DepartDate": $departDate.val());
+                            entryDepartRecords.push({ "EntryDate": $entryDate.val(), "DepartDate": $departDate.val() });
+                        }
+                    });
+                    //debugger;
+                    var visaValidity = {
+                                        VisaStartDate: $("[name='VisaStartDate']").val(), VisaEndDate: $("[name='VisaEndDate']").val()
+                    };
+                    $.cookie("VisaValidity", JSON.stringify(visaValidity), { expires: 30 });
+                    $.cookie("EntryDepartRecords", JSON.stringify(entryDepartRecords), { expires: 30 });
                 }
             </script>
 
@@ -282,4 +406,55 @@
             </table>
         </div>
     </div>
+
+    <div id="DonateDialog" style="display:none;">
+        <h2 style="text-align:center;">
+            If you think the software is helpful, any amount of donation is highly appreciated.
+        </h2>
+        <div class="col-sm-4 col-md-3">
+            <div class="thumbnail thumbnailSuppliment"> 
+                <img src="~/images/BankTransfer.jpg" style="width:200px; height:129px;" />
+                <p>Bank Name:Commonwealth Bank<br />BSB:063 103<br />Account Number:1034 9412<br />Account Holder:JING XU</p>
+            </div>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <div class="thumbnail thumbnailSuppliment">
+                <img src="~/images/PayPal.jpg" style="width:200px; height:200px;" />
+                <p>PayPal Account: gdutjim@gmail.com</p>
+            </div>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <div class="thumbnail thumbnailSuppliment">
+                <img src="~/images/ZhiFuBao.jpg" style="width:200px; height:300px;" />
+            </div>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <div class="thumbnail thumbnailSuppliment">
+                <img src="~/images/WeiXin.jpg" style="width:200px; height:271px;" />
+            </div>
+        </div>
+            @*<table>
+            <tbody>
+                <tr>
+                    <td>
+                        <img src="~/images/BankTransfer.jpg" />
+
+                    </td>
+                    <td>
+                        <img src="~/images/PayPal.jpg" />
+
+                    </td>
+                    <td>
+                        <img src="~/images/ZhiFuBao.jpg" />
+
+                    </td>
+                    <td>
+                        <img src="~/images/WeiXin.jpg" />
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>*@
+
+        </div>
 </form>
