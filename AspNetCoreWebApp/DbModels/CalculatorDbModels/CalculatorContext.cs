@@ -1,11 +1,12 @@
 ﻿using System;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Pomelo.EntityFrameworkCore.MySql;
 
 namespace AspNetCoreWebApp.DbModels.CalculatorDbModels
 {
-    public partial class CalculatorContext : DbContext
+    public partial class CalculatorContext : IdentityDbContext<AspNetUsers>
     {
         public CalculatorContext()
         {
@@ -16,7 +17,7 @@ namespace AspNetCoreWebApp.DbModels.CalculatorDbModels
         {
         }
 
-        public virtual DbSet<User> User { get; set; }
+        //public virtual DbSet<User> User { get; set; }
 
         // Unable to generate entity type for table 'dbo.ImportedAdData'. Please see the warning messages.
         // Unable to generate entity type for table 'dbo.DropShipImportedData'. Please see the warning messages.
@@ -42,32 +43,41 @@ namespace AspNetCoreWebApp.DbModels.CalculatorDbModels
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.Property(e => e.Id).HasColumnName("ID");
+            
+            base.OnModelCreating(modelBuilder);
 
-                entity.Property(e => e.FirstName)
-                    .IsRequired()
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
+            //modelBuilder.Entity<User>().ToTable("User");
+            //Use your application user class here
 
-                entity.Property(e => e.LastName)
-                    .IsRequired()
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
+            //modelBuilder.Entity<User>(entity =>
+            //{
+            //    entity.HasKey(t => t.Id);
+
+            //    entity.Property(e => e.Id).HasColumnName("Id");
+
+            //    entity.Property(e => e.UserName)
+            //        .IsRequired()
+            //        .HasMaxLength(100)
+            //        .IsUnicode(false);
+
+            //    //entity.Property(e => e.LastName)
+            //    //    .IsRequired()
+            //    //    .HasMaxLength(100)
+            //    //    .IsUnicode(false);
 
 
-                entity.Property(e => e.Password)
-                    .IsRequired()
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
+            //    entity.Property(e => e.PasswordHash)
+            //        .IsRequired()
+            //        .HasMaxLength(100)
+            //        .IsUnicode(false);
 
-                entity.Property(e => e.EmailAddress)
-                    .IsRequired()
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
+            //    entity.Property(e => e.Email)
+            //        .IsRequired()
+            //        .HasMaxLength(100)
+            //        .IsUnicode(false);
 
-            });
+            //    entity.ToTable("User");
+            //});
 
         }
     }

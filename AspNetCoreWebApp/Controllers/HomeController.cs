@@ -10,6 +10,8 @@ using AspNetCoreWebApp.Filters;
 using AspNetCoreWebApp.Business;
 using RestSharp;
 using System.Net;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AspNetCoreWebApp.Controllers
 {
@@ -17,42 +19,56 @@ namespace AspNetCoreWebApp.Controllers
     public class HomeController : Controller
     {
         private readonly CalculatorContext _dbContext;
+        private readonly SignInManager<AspNetUsers> _signInManager;
+        private readonly UserManager<AspNetUsers> _userManager;
 
-        public HomeController(CalculatorContext dbContext)
+        public HomeController(CalculatorContext dbContext,
+            UserManager<AspNetUsers> userManager,
+            SignInManager<AspNetUsers> signInManager)
         {
             _dbContext = dbContext;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         [CustomerFilter(true)]
-        public IActionResult Index(bool isContinue)
+        public async Task<IActionResult> Index(bool isContinue)
         {
-            _dbContext.Database.EnsureCreated();
-            var users = _dbContext.User;
-            foreach(var user in users)
+            //_dbContext.Database.EnsureCreated();
+            var users = _dbContext.Users;
+            foreach (var user in users)
             {
 
             }
 
-            var newUser = new User();
-            newUser.EmailAddress = "gdutjim@gmail.com";
-            newUser.Password = "123";
-            newUser.FirstName = "Jing";
-            newUser.LastName = "Xu";
-            newUser.Status = 1;
-            newUser.CreateBy = newUser.EmailAddress;
-            newUser.CreateTime = DateTime.Now;
-            newUser.EditBy = newUser.EmailAddress;
-            newUser.EditTime = DateTime.Now;
-
-            users.Add(newUser);
-            _dbContext.SaveChanges();
-
-            //using (var dbcontext = new AutoPostAdDealSplashContext())
+            //var newUser= new AspNetUsers { UserName = "jim0519", Email = "gdutjim@gmail.com" };
+            //var result = await _userManager.CreateAsync(newUser, "Shishiliu-0310");
+            //if (result.Succeeded)
             //{
-            //    dbcontext.Database.EnsureCreated();
+            //    //await _signInManager.SignInAsync(newUser, isPersistent: true);
             //}
+                //var newUser = new User();
+                //newUser.EmailAddress = "gdutjim@gmail.com";
+                //newUser.Password = "123";
+                //newUser.FirstName = "Jing";
+                //newUser.LastName = "Xu";
+                //newUser.Status = 1;
+                //newUser.CreateBy = newUser.EmailAddress;
+                //newUser.CreateTime = DateTime.Now;
+                //newUser.EditBy = newUser.EmailAddress;
+                //newUser.EditTime = DateTime.Now;
 
-            return View();
+                //users.Add(newUser);
+                //_dbContext.SaveChanges();
+
+
+
+                //using (var dbcontext = new AutoPostAdDealSplashContext())
+                //{
+                //    dbcontext.Database.EnsureCreated();
+                //}
+
+                return View();
         }
 
         public IActionResult About()
@@ -89,6 +105,7 @@ namespace AspNetCoreWebApp.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        [Authorize]
         public IActionResult Calculator()
         {
             var model = new CalculatorViewModel();

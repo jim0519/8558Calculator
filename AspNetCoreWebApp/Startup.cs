@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql;
+using Microsoft.AspNetCore.Identity;
 
 namespace AspNetCoreWebApp
 {
@@ -46,12 +47,17 @@ namespace AspNetCoreWebApp
             if (!Directory.Exists(dbFilePath))
                 Directory.CreateDirectory(dbFilePath);
 
-            services.AddDbContext<CalculatorContext>(config=> {
+            services
+            .AddDbContext<CalculatorContext>(config=> {
                 //config.UseInMemoryDatabase("AutoPostAdDealSplashInMemory");
                 config.UseSqlite($"Filename={dbFilePath}\\Calculator.db");
                 //config.Options.
             });
 
+            //services.AddAuthentication((option) => option.DefaultAuthenticateScheme = jwt);
+            services.AddDefaultIdentity<AspNetUsers>()
+                .AddEntityFrameworkStores<CalculatorContext>()
+                .AddDefaultTokenProviders();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             //services.AddScoped<>
            
@@ -93,7 +99,7 @@ namespace AspNetCoreWebApp
             //    return Task.CompletedTask;
             //}));
 
-            //app.UseAuthentication();
+            app.UseAuthentication();
 
             app.Use(async  (context, next) =>
             {
@@ -112,8 +118,9 @@ namespace AspNetCoreWebApp
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Calculator}");
-                //template: "{controller=Home}/{action=VotoboSearch}");
+                //template: "{controller=Home}/{action=Index}");
+                //template: "{controller=Home}/{action=Calculator}");
+                template: "{controller=Home}/{action=VotoboSearch}");
             });
 
 
