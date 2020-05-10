@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql;
 using Microsoft.AspNetCore.Identity;
@@ -58,6 +59,9 @@ namespace AspNetCoreWebApp
             services.AddDefaultIdentity<AspNetUsers>()
                 .AddEntityFrameworkStores<CalculatorContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddLogging((builder)=>builder.AddConsole());
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             //services.AddScoped<>
            
@@ -79,6 +83,8 @@ namespace AspNetCoreWebApp
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+           
 
             //app.ApplicationServices.getse
             
