@@ -1,0 +1,42 @@
+﻿@page
+@model LockoutModel
+@{
+    var accountStatement = "exists";
+    if(HttpContext.Request.Query.Count>0&&HttpContext.Request.Query["RegisterSuccess"][0]!=null)
+    {
+        accountStatement = "has been created successfully";
+    }
+    ViewData["Title"] = $"Your account {accountStatement}, but has been locked out.";
+}
+
+<header>
+    <h1 class="text-danger">@ViewData["Title"]</h1>
+    @*<p class="text-danger">This account has been locked out, please try again later.</p>*@
+    <p class="text-danger">The calculator trial period is end, our new pricing is:</p>
+    <p class="text-danger">AUD $5 for 1 week use, AUD $80 for 1 year use.(currency rate is: AUD $1= CNY ￥4.5)</p>
+    <p class="text-danger">Please make the payment with any method below with STATING your EMAIL ADDRESS in description and we will reopen your account in minutes.(If you are using bank transfer and your bank is not Commonwealth Bank, please send the payment screenshot to gdutjim@gmail.com)</p>
+    <div id="DonateDialog">
+        <div class="col-sm-4 col-md-3">
+            <div class="thumbnail thumbnailSuppliment">
+                <img src="~/images/BankTransfer.jpg" style="width:200px; height:129px;" />
+                <p>Bank Name:Commonwealth Bank<br />BSB:063 103<br />Account Number:1034 9412<br />Account Holder:JING XU</p>
+            </div>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <div class="thumbnail thumbnailSuppliment">
+                <img src="~/images/PayPal.jpg" style="width:200px; height:200px;" />
+                <p>PayPal Account: gdutjim@gmail.com</p>
+            </div>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <div class="thumbnail thumbnailSuppliment">
+                <img src="~/images/ZhiFuBao.jpg" style="width:200px; height:300px;" />
+            </div>
+        </div>
+        <div class="col-sm-4 col-md-3">
+            <div class="thumbnail thumbnailSuppliment">
+                <img src="~/images/WeiXin.jpg" style="width:200px; height:271px;" />
+            </div>
+        </div>
+    </div>
+</header>

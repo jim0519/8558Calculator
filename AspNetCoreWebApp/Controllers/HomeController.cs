@@ -105,7 +105,7 @@ namespace AspNetCoreWebApp.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        [Authorize]
+        [CustomAuthorization]
         public IActionResult Calculator()
         {
             var model = new CalculatorViewModel();
@@ -214,5 +214,6 @@ namespace AspNetCoreWebApp.Controllers
             });
             return tcs.Task;
         }
+
     }
 }

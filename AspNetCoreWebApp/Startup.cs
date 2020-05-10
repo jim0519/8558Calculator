@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Pomelo.EntityFrameworkCore.MySql;
 using Microsoft.AspNetCore.Identity;
+using AspNetCoreWebApp.Areas.Identity;
 
 namespace AspNetCoreWebApp
 {
@@ -60,7 +61,7 @@ namespace AspNetCoreWebApp
                 .AddDefaultTokenProviders();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             //services.AddScoped<>
-           
+            services.AddScoped<SignInManager<AspNetUsers>, CustomSigninManager<AspNetUsers>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -116,11 +117,12 @@ namespace AspNetCoreWebApp
 
             app.UseMvc(routes =>
             {
+                routes.MapRoute("area_route", "{area:exists}/{controller}/{action}/{id?}");
                 routes.MapRoute(
                     name: "default",
                 //template: "{controller=Home}/{action=Index}");
-                //template: "{controller=Home}/{action=Calculator}");
-                template: "{controller=Home}/{action=VotoboSearch}");
+                template: "{controller=Home}/{action=Calculator}");
+                //template: "{controller=Home}/{action=VotoboSearch}");
             });
 
 
